@@ -107,9 +107,6 @@ meuFormulario: FormGroup;
       this.router.navigate([''], {relativeTo: this.route })
     }
 
-
-
-
     enviarFormulario(): void {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: 'Deseja realmente inserir um candidato?'

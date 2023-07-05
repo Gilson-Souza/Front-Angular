@@ -42,6 +42,7 @@ mat-card{
 }
 .item__candidato{
     width: 60%;
+    min-width: 250px;
 }
 
 .filiacao{
@@ -52,6 +53,7 @@ mat-card{
 }
 .item__filiacao{
   width: 46%;
+  min-width: 250px;
   padding: 10px;
 }
 
@@ -77,6 +79,7 @@ mat-card{
   justify-content: center;
   justify-items: center;
   align-items: center;
+
 }
 
 .tipo{
@@ -90,4 +93,20 @@ mat-card{
   justify-content: center;
   justify-items: center;
   align-items: center;
+}
+
+@media screen and (max-width: 591px) {
+
+    .itens input{
+      min-width: 250px;
+    }
+
+    .telefone{
+      margin-left: 2.8rem;
+    }
+    .tipo{
+      margin-left: 2.2rem;
+    }
+   
+
 }

@@ -20,3 +20,19 @@ table {
   flex-direction: column;
 }
 
+@media screen and (max-width: 678px){
+  table th {
+    font-size: 14px;
+  }
+
+  /* Oculta algumas colunas da tabela */
+  table td:nth-child(2),
+  table th:nth-child(2) {
+    display: none;
+  }
+
+  table td:nth-child(3),
+  table th:nth-child(3) {
+    display: none;
+  }
+}

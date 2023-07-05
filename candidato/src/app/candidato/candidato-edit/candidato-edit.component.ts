@@ -44,21 +44,29 @@ export class CandidatoEditComponent {
 
     this.formulario = this.formBuilder.group({
       nome: ['', Validators.required],
+      filiacaoId: [''],
       filiacao: this.formBuilder.group({
+        id: [''],
         nomePai: [''],
         nomeMae: ['']
       }),
+      enderecoId:[''],
       endereco: this.formBuilder.group({
+        id: [''],
         logradouro: [''],
         cep: [''],
         numero: [''],
         cidade: this.formBuilder.group({
+          id:[''],
           nome: [''],
           estado: this.formBuilder.group({
+            id:[''],
             nome: [''],
             sigla: ['']
-          })
-        })
+          }),
+          estadoId:['']
+        }),
+        cidadeId:['']
       }),
       telefones: this.formBuilder.array([]),
       cursos: this.formBuilder.array([])
@@ -69,22 +77,31 @@ export class CandidatoEditComponent {
   }
   preencherFormulario() {
     this.formulario.patchValue({
+      id: this.candidato.id,
       nome: this.candidato.nome,
+      filiacaoId: this.candidato.filiacaoId,
       filiacao: {
+        id: this.candidato.filiacao.id,
         nomePai: this.candidato.filiacao.nomePai,
         nomeMae: this.candidato.filiacao.nomeMae
       },
+      enderecoId: this.candidato.enderecoId,
       endereco: {
+        id: this.candidato.endereco.id,
         logradouro: this.candidato.endereco.logradouro,
         cep: this.candidato.endereco.cep,
         numero: this.candidato.endereco.numero,
         cidade: {
+          id: this.candidato.endereco.cidade.id,
           nome: this.candidato.endereco.cidade.nome,
           estado: {
+            id: this.candidato.endereco.cidade.estado.id,
             nome:this.candidato.endereco.cidade.estado.nome,
             sigla: this.candidato.endereco.cidade.estado.sigla
-          }
-        }
+          },
+          estadoId: this.candidato.endereco.cidade.estadoId
+        },
+        cidadeId: this.candidato.endereco.cidadeId
       }
     });
 
@@ -97,6 +114,7 @@ export class CandidatoEditComponent {
 
       this.candidato.telefones.forEach((telefone: any) => {
           telefonesFormArray.push(this.formBuilder.group({
+            id: [telefone.id],
             numero: [telefone.numero],
             tipo: [telefone.tipo]
           }));
@@ -108,6 +126,7 @@ export class CandidatoEditComponent {
       const cursosFormArray = this.formulario.get('cursos') as FormArray;
       this.candidato.cursos.forEach((curso: any) => {
         cursosFormArray.push(this.formBuilder.group({
+          id: [curso.id],
           nome: [curso.nome]
         }));
       });
@@ -161,11 +180,13 @@ export class CandidatoEditComponent {
     this.router.navigate([''], {relativeTo: this.route })
   }
 
+
+
   editar() {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: 'Deseja realmente alterar este candidato?'
       });
-
+      console.log(this.formulario.value);
       dialogRef.afterClosed().subscribe((result) => {
       if (result) {
       const candidatoData: Candidatoo = this.formulario.value;

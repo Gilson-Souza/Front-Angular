@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { first, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, first, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
 import { Candidatoo } from '../models/Candidato';
 
 
@@ -12,6 +12,7 @@ import { Candidatoo } from '../models/Candidato';
 export class CandidatosService {
 
   private readonly API = 'api/Candidato';
+  http: any;
 
   constructor( private httpClient: HttpClient) { }
 
@@ -35,8 +36,7 @@ export class CandidatosService {
 
   edit(candidato: Candidatoo, id: number): Observable<Candidatoo> {
     const url = `${this.API}/edit/${id}`;
-    const headers = new HttpHeaders().set('Content-Type', 'application/json')
-    return this.httpClient.put<Candidatoo>(url, candidato, { headers }).
+    return this.httpClient.put<Candidatoo>(url, candidato).
     pipe(
       tap(updatedCandidato => console.log(`Candidato atualizado: ${updatedCandidato.id}`))
     );
@@ -54,6 +54,22 @@ export class CandidatosService {
     return this.httpClient.post<Candidatoo>(this.API, candidato, { headers });
   }
 
+
+  makeApiRequest()  {
+    this.http.get(this.API)
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 500 && error.error?.ExceptionMessage) {
+          const errorMessage = error.error.ExceptionMessage;
+          const validationErrors = errorMessage.split('\n'); // Divide as mensagens de erro por linha
+          // Faça o processamento necessário para exibir as mensagens de erro no front-end
+          console.log(validationErrors)
+        }
+        return throwError(error);
+      })
+    )
+
+  }
 
 
 }
