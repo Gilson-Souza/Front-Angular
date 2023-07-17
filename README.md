@@ -1,6 +1,8 @@
 # Front-Angular
 Repositorio destinados aos projetos Angular
 
+Projeto Candidato
+
 O projeto [candidato] é uma aplicatição Angular que consome uma API de candidatos para realizar operações de CRUD (Create, Read, Update, Delete). O objetivo deste projeto é fornecer uma interface de usuário intuitiva para gerenciar candidatos e suas informações relacionadas.
 
 O aplicativo possui os seguintes recursos e componentes principais:
