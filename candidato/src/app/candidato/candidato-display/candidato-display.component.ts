@@ -27,11 +27,8 @@ export class CandidatoDisplayComponent implements OnInit {
               private snackBar: MatSnackBar
             )
   {
+
     this.id = this.route.snapshot.params['id']
-
-    //this.candidatos$ = this.route.snapshot.params['id']
-
-    //console.log(this.candidatos$)
 
     this.candidatos$ = this.candidatoService.display(this.id)
     .pipe(
@@ -67,7 +64,7 @@ export class CandidatoDisplayComponent implements OnInit {
               this.dialog.closeAll();
               this.snackBar.open('Candidato excluído com sucesso!', 'Fechar', { duration: 5000 });
               // Redirecionar para a tela principal
-              this.router.navigate([''], {relativeTo: this.route })
+              this.home();
             },
             (error) => {
               console.error('Ocorreu um erro ao excluir o candidato:', error);
@@ -83,7 +80,6 @@ navigateToEdit() {
       const id = this.id; // Substitua pelo ID desejado
       const url = `/Candidato/edit/${id}`;
       this.router.navigateByUrl(url);
-
 }
 
   ngOnInit(): void {

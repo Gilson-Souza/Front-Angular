@@ -15,10 +15,11 @@ import { Candidatoo } from '../models/Candidato';
 })
 export class CandidatoEditComponent {
 
-  //candidatos$: Observable<Candidatoo>;
   public candidato: any;
   public formulario: FormGroup;
   public id: number;
+
+
 
   constructor(private candidatoService: CandidatosService,
               private route: ActivatedRoute,
@@ -48,21 +49,21 @@ export class CandidatoEditComponent {
       filiacao: this.formBuilder.group({
         id: [''],
         nomePai: [''],
-        nomeMae: ['']
+        nomeMae: ['' , Validators.required]
       }),
       enderecoId:[''],
       endereco: this.formBuilder.group({
         id: [''],
-        logradouro: [''],
-        cep: [''],
-        numero: [''],
+        logradouro: ['', Validators.required],
+        cep: ['' ,Validators.required],
+        numero: ['' , Validators.required],
         cidade: this.formBuilder.group({
           id:[''],
-          nome: [''],
+          nome: ['', Validators.required],
           estado: this.formBuilder.group({
             id:[''],
-            nome: [''],
-            sigla: ['']
+            nome: ['', Validators.required],
+            sigla: ['' , Validators.required]
           }),
           estadoId:['']
         }),
@@ -75,6 +76,68 @@ export class CandidatoEditComponent {
 
 
   }
+
+
+
+
+  get nome(){
+    return this.formulario.get('nome')!;
+  }
+  get nomeMae(){
+    return this.formulario.get('filiacao.nomeMae')!;
+  }
+  get logradouro(){
+    return this.formulario.get('endereco.logradouro')!;
+  }
+  get numero(){
+    return this.formulario.get('endereco.numero')!;
+  }
+  get cep(){
+    return this.formulario.get('endereco.cep')!;
+  }
+  get cidade(){
+    return this.formulario.get('endereco.cidade.nome')!;
+  }
+  get estado(){
+    return this.formulario.get('endereco.cidade.estado.nome')!;
+  }
+  get sigla(){
+    return this.formulario.get('endereco.cidade.estado.sigla')!;
+  }
+
+  get telefones() {
+    return this.formulario.controls["telefones"] as FormArray;
+  }
+
+  get cursos(){
+    return this.formulario.controls["cursos"] as FormArray;
+  }
+
+
+  addPhone() {
+    const phoneForm = this.formBuilder.group({
+      numero: ['', Validators.required],
+      tipo: ['' ,Validators.required]
+    });
+    this.telefones.push(phoneForm);
+  }
+
+  deletePhone(phoneIndex: number) {
+    this.telefones.removeAt(phoneIndex);
+  }
+
+  addCourse(){
+  const courseForm = this.formBuilder.group({
+    nome: ['', Validators.required]
+    });
+    this.cursos.push(courseForm);
+  }
+
+  deleteCourse(courseIndex: number) {
+    this.cursos.removeAt(courseIndex)
+  }
+
+
   preencherFormulario() {
     this.formulario.patchValue({
       id: this.candidato.id,
@@ -106,12 +169,8 @@ export class CandidatoEditComponent {
     });
 
 
-
-      // Resto do código para acessar os campos do telefone
-      if (this.candidato.telefones && this.candidato.telefones.length > 0) {
+    if (this.candidato.telefones && this.candidato.telefones.length > 0) {
       const telefonesFormArray = this.formulario.get('telefones') as FormArray;
-
-
       this.candidato.telefones.forEach((telefone: any) => {
           telefonesFormArray.push(this.formBuilder.group({
             id: [telefone.id],
@@ -135,39 +194,6 @@ export class CandidatoEditComponent {
   }
 
 
-
-  get telefones() {
-    return this.formulario.controls["telefones"] as FormArray;
-  }
-
-  get cursos(){
-    return this.formulario.controls["cursos"] as FormArray;
-  }
-
-
-  addPhone() {
-    const phoneForm = this.formBuilder.group({
-      numero: [''],
-      tipo: ['']
-    });
-    this.telefones.push(phoneForm);
-  }
-
-  deletePhone(phoneIndex: number) {
-    this.telefones.removeAt(phoneIndex);
-  }
-
-  addCourse(){
-  const courseForm = this.formBuilder.group({
-    nome: ['']
-    });
-    this.cursos.push(courseForm);
-  }
-
-  deleteCourse(courseIndex: number) {
-    this.cursos.removeAt(courseIndex)
-  }
-
   onError() {
     this.bar.open('Erro ao salvar candidato', '' , {duration: 5000})
   };
@@ -183,6 +209,10 @@ export class CandidatoEditComponent {
 
 
   editar() {
+    if (this.formulario.invalid) {
+      this.bar.open('Existem campos que não foram corretamente preenchidos .', 'Fechar');
+      return;
+    } else {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: 'Deseja realmente alterar este candidato?'
       });
@@ -196,7 +226,7 @@ export class CandidatoEditComponent {
         (sucess) => {
           this.dialog.closeAll();
           this.bar.open('Candidato editado com sucesso!', 'Fechar', { duration: 5000 });
-          this.router.navigate([''], {relativeTo: this.route })
+          this.home();
       },
         (error) => {
           this.onError();
@@ -208,6 +238,7 @@ export class CandidatoEditComponent {
         );
       }
     });
+    }
   }
 
 

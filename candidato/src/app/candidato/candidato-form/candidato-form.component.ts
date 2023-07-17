@@ -1,7 +1,7 @@
 import { Candidatoo } from './../models/Candidato';
 import { CandidatosService } from './../services/candidatos.service';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,22 +31,22 @@ meuFormulario: FormGroup;
 
       this.meuFormulario = this.formBuilder.group({
 
-        Nome: [''],
+        Nome: ['' ,Validators.required],
 
           Filiacao: this.formBuilder.group({
             NomePai: [''],
-            NomeMae: ['']
+            NomeMae: ['', Validators.required]
           }),
 
           Endereco: this.formBuilder.group({
-            Logradouro: [''],
-            Cep: [''],
-            Numero: [''],
+            Logradouro: ['' ,Validators.required],
+            Cep: ['' ,Validators.required],
+            Numero: ['' ,Validators.required],
             Cidade: this.formBuilder.group({
-              Nome: [''],
+              Nome: ['',Validators.required],
               Estado: this.formBuilder.group({
-                Nome: [''],
-                Sigla: ['']
+                Nome: ['',Validators.required],
+                Sigla: ['',Validators.required]
               })
 
             })
@@ -61,6 +61,36 @@ meuFormulario: FormGroup;
 
     }
 
+    get Nome(){
+      return this.meuFormulario.get('Nome')!;
+    }
+    get NomeMae(){
+      return this.meuFormulario.get('Filiacao.NomeMae')!;
+    }
+    get Logradouro(){
+      return this.meuFormulario.get('Endereco.Logradouro')!;
+    }
+    get Numero(){
+      return this.meuFormulario.get('Endereco.Numero')!;
+    }
+    get Cep(){
+      return this.meuFormulario.get('Endereco.Cep')!;
+    }
+    get Cidade(){
+      return this.meuFormulario.get('Endereco.Cidade.Nome')!;
+    }
+    get Estado(){
+      return this.meuFormulario.get('Endereco.Cidade.Estado.Nome')!;
+    }
+    get Sigla(){
+      return this.meuFormulario.get('Endereco.Cidade.Estado.Sigla')!;
+    }
+    get Telefones(){
+      return this.meuFormulario.controls["Telefones"] as FormArray;
+    }
+    get Cursos(){
+      return this.meuFormulario.controls["Cursos"] as FormArray;
+    }
 
 
     get telefones() {
@@ -74,8 +104,8 @@ meuFormulario: FormGroup;
 
     addPhone() {
       const phoneForm = this.formBuilder.group({
-        Numero: [''],
-        Tipo: ['']
+        Numero: ['', Validators.required],
+        Tipo: ['', Validators.required]
       });
       this.telefones.push(phoneForm);
     }
@@ -86,7 +116,7 @@ meuFormulario: FormGroup;
 
     addCourse(){
     const courseForm =  this.formBuilder.group({
-      Nome: ['']
+      Nome: ['', Validators.required]
       });
       this.cursos.push(courseForm);
     }
@@ -107,7 +137,13 @@ meuFormulario: FormGroup;
       this.router.navigate([''], {relativeTo: this.route })
     }
 
+
+
     enviarFormulario(): void {
+      if (this.meuFormulario.invalid || this.Cursos.length > 3 || this.Cursos.length < 1 || this.Telefones.length > 3 || this.Telefones.length < 1) {
+        this.bar.open('Existem campos que não foram corretamente preenchidos .', 'Fechar');
+        return;
+      } else {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: 'Deseja realmente inserir um candidato?'
       });
@@ -119,7 +155,7 @@ meuFormulario: FormGroup;
         () => {
             this.dialog.closeAll();
             this.bar.open('Candidato inserido com sucesso!', 'Fechar', { duration: 5000 });
-            this.router.navigate([''], {relativeTo: this.route })
+            this.home();
         },
           (error) => {
             this.onError();
@@ -131,6 +167,7 @@ meuFormulario: FormGroup;
           );
         }
       });
+    }
     }
 
 

@@ -55,21 +55,4 @@ export class CandidatosService {
   }
 
 
-  makeApiRequest()  {
-    this.http.get(this.API)
-    .pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 500 && error.error?.ExceptionMessage) {
-          const errorMessage = error.error.ExceptionMessage;
-          const validationErrors = errorMessage.split('\n'); // Divide as mensagens de erro por linha
-          // Faça o processamento necessário para exibir as mensagens de erro no front-end
-          console.log(validationErrors)
-        }
-        return throwError(error);
-      })
-    )
-
-  }
-
-
 }
